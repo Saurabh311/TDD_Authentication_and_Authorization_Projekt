@@ -1,4 +1,4 @@
-package org.example;
+package org.login.utils;
 
 import java.security.SecureRandom;
 import java.util.Base64;
