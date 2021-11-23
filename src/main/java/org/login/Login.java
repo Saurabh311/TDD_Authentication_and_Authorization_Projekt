@@ -1,6 +1,8 @@
 package org.login;
 
+import org.login.exceptions.WrongUserInputException;
 import org.login.utils.Encryption;
+import org.login.utils.JWT;
 import java.util.HashMap;
 
 public class Login {
@@ -12,11 +14,24 @@ public class Login {
         addUser("kalle", "password");
     }
 
-    public boolean varifyUserAndPassword (String userName, String password) {
-        String salt = Encryption.generateSalt(512).get();
-        String key = Encryption.hashPassword(password, salt).get();
+    public boolean varifyUserAndPassword (String userName, String password){
+        return userDB.entrySet().stream().filter(user -> user.getKey().equals(userName)).map(user ->
+                (User) user.getValue()).anyMatch(userMatch ->
+                Encryption.verifyPassword(password, userMatch.getPassword(), userMatch.getSalt()));
+    }
 
-        return userDB.entrySet().stream().filter(user -> user.getKey().equals(userName)).map(user -> (User) user.getValue()).anyMatch(userMatch -> Encryption.verifyPassword(password, userMatch.getPassword(), userMatch.getSalt()));
+    public boolean varifyUserAndToken (String userName, String password)throws WrongUserInputException{
+        User user = getUserDB().get(userName);
+        if (user == null || !Encryption.verifyPassword(password, user.getPassword(), user.getSalt())) {
+            throw new WrongUserInputException("Login failed");
+        }
+        String token = JWT.createJWT(user.getUserName());
+        boolean isVerified = JWT.verifyUserToken(token, user.getUserName());
+        if (isVerified){
+            return isVerified;
+        }else{
+            throw new WrongUserInputException("Login failed");
+        }
     }
 
     public void addUser(String user, String password){
@@ -25,5 +40,7 @@ public class Login {
         userDB.put(user,new User(user, passwordKey, salt));
     }
 
-
+    public HashMap<String, User> getUserDB(){
+        return userDB;
+    }
 }
