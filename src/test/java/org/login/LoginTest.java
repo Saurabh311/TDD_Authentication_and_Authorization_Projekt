@@ -1,5 +1,6 @@
 package org.login;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.login.exceptions.WrongUserInputException;
@@ -8,14 +9,29 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoginTest {
+    Login login = new Login();
+    void setUp() {
+        login.addUser("anna", "losen");
+        login.addUser("berit", "123456");
+        login.addUser("kalle", "password");
+    }
+    @Test
+    void test_userName_paswword_success() {
+        assertTrue(login.varifyUserAndPassword("anna", "losen"));
+    }
+
+    @Test
+    void test_userName_paswword_Fail() {
+        assertFalse(login.varifyUserAndPassword("Wrong", "passvard"));
+    }
+
     @ParameterizedTest
     @CsvSource({
             "anna, losen",
             "berit, 123456",
             "kalle, password"
     })
-    void test_username_password_list_success(String userName, String password) throws WrongUserInputException {
-        Login login = new Login();
+    void test_userName_password_list_success(String userName, String password) throws WrongUserInputException {
         assertTrue(login.varifyUserAndPassword(userName, password));
     }
 
@@ -26,7 +42,6 @@ public class LoginTest {
             "WrongKalle, password"
     })
     void test_username_password_list_with_wrong_UserName(String userName, String password) throws WrongUserInputException {
-        Login login = new Login();
         assertFalse(login.varifyUserAndPassword(userName, password));
     }
 
@@ -36,12 +51,7 @@ public class LoginTest {
             "berit, passwordWrong",
     })
     void test_username_password_list_with_wrong_password(String userName, String password) throws WrongUserInputException {
-        Login login = new Login();
         assertFalse(login.varifyUserAndPassword(userName, password));
     }
-    /*void test_verify_user_token_success(String username, String password) throws WrongUserCredentialsException {
-
-        assertTrue(verifyUserToken(loginController.loginUser(username, password), username));
-    }*/
 
 }

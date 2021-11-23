@@ -21,17 +21,21 @@ public class Login {
     }
 
     public boolean varifyUserAndToken (String userName, String password)throws WrongUserInputException{
-        User user = getUserDB().get(userName);
-        if (user == null || !Encryption.verifyPassword(password, user.getPassword(), user.getSalt())) {
-            throw new WrongUserInputException("Login failed");
-        }
-        String token = JWT.createJWT(user.getUserName());
-        boolean isVerified = JWT.verifyUserToken(token, user.getUserName());
+        String token = varifyUserGenarteToken(userName,password);
+        boolean isVerified = JWT.verifyUserToken(token, userName);
         if (isVerified){
             return isVerified;
         }else{
             throw new WrongUserInputException("Login failed");
         }
+    }
+
+    public String varifyUserGenarteToken (String userName, String password)throws WrongUserInputException{
+        User user = getUserDB().get(userName);
+        if (varifyUserAndPassword(userName,password)){
+            return JWT.createJWT(user.getUserName());
+        }
+        throw new WrongUserInputException("Login Failed");
     }
 
     public void addUser(String user, String password){
