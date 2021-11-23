@@ -16,6 +16,19 @@ public class TokenAuthorizationTest {
             "berit, 123456",
             "kalle, password"
     })
+
+    void test_user_encrypted_password_generateToken(String user, String password) throws WrongUserInputException{
+        String token = login.varifyUserGenarteToken(user, password);
+        assertNotNull(token);
+        assertNotEquals("", token);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "anna, losen",
+            "berit, 123456",
+            "kalle, password"
+    })
     void test_username_token_success(String userName, String password) throws WrongUserInputException {
         assertTrue(login.varifyUserAndToken(userName, password));
     }
