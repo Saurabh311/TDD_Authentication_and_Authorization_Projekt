@@ -2,56 +2,55 @@ package org.login;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.login.exceptions.InvalidUserInputException;
-
+import org.junit.jupiter.params.provider.MethodSource;
+import org.login.enums.Resource;
+import org.login.enums.Rights;
+import java.util.List;
+import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoginTest {
     Login login = new Login();
-    void setUp() {
-        login.addUser("anna", "losen");
-        login.addUser("berit", "123456");
-        login.addUser("kalle", "password");
-    }
-    @Test
-    void test_userName_paswword_success() {
-        assertTrue(login.varifyUserAndPassword("anna", "losen"));
+
+    static Stream<Arguments> testData() {
+        return Stream.of(
+                Arguments.of("anna", "losen", Resource.ACCOUNT, List.of(Rights.READ)),
+                Arguments.of("berit", "123456", Resource.ACCOUNT, List.of(Rights.READ, Rights.WRITE)),
+                Arguments.of("kalle", "password", Resource.PROVISION_CALC, List.of(Rights.EXECUTE))
+        );
     }
 
     @Test
-    void test_userName_paswword_Fail() {
-        assertFalse(login.varifyUserAndPassword("Wrong", "passvard"));
+    void test_userName_paswword_success(){
+        assertTrue(login.login("anna", "losen"));
+    }
+
+    @Test
+    void test_userName_wrongPaswword_fail(){
+        assertFalse(login.login("anna", "passvard"));
+    }
+
+    @Test
+    void test_userName_wrongUser_fail(){
+        assertFalse(login.login("wrong", "losen"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("testData")
+    void test_userName_password_list_success(String userName, String password){
+        assertTrue(login.login(userName, password));
     }
 
     @ParameterizedTest
     @CsvSource({
-            "anna, losen",
-            "berit, 123456",
-            "kalle, password"
+            "wrong, losen",
+            "berit, wrong",
+            "Kalle, 123456"
     })
-    void test_userName_password_list_success(String userName, String password) throws InvalidUserInputException {
-        assertTrue(login.varifyUserAndPassword(userName, password));
+    void test_wrongUsername_wrongPassword_list_fail(String userName, String password){
+        assertFalse(login.login(userName, password));
     }
-
-    @ParameterizedTest
-    @CsvSource({
-            "wrongUser, losen",
-            "wrongBerit, 123456",
-            "WrongKalle, password"
-    })
-    void test_username_password_list_with_wrong_UserName(String userName, String password) throws InvalidUserInputException {
-        assertFalse(login.varifyUserAndPassword(userName, password));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "anna, wrongPassword",
-            "berit, passwordWrong",
-    })
-    void test_username_password_list_with_wrong_password(String userName, String password) throws InvalidUserInputException {
-        assertFalse(login.varifyUserAndPassword(userName, password));
-    }
-
 }
