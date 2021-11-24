@@ -13,17 +13,14 @@ import static java.lang.System.currentTimeMillis;
 
 public class JWT {
     private static final String SECRET_KEY = "Wrong Password";
-;
+
     public static String createJWT(String userName) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         long nowMillis = currentTimeMillis();
         Date now = new Date(nowMillis);
-        Date tokenExpire = new Date(currentTimeMillis() + nowMillis);
-
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-
         //Let's set the JWT Claims
         JwtBuilder builder = Jwts.builder()
                 .setIssuer("Saurabh Chauhan")
