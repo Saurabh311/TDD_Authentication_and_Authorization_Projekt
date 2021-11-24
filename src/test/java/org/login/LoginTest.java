@@ -3,7 +3,7 @@ package org.login;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.login.exceptions.WrongUserInputException;
+import org.login.exceptions.InvalidUserInputException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,7 +31,7 @@ public class LoginTest {
             "berit, 123456",
             "kalle, password"
     })
-    void test_userName_password_list_success(String userName, String password) throws WrongUserInputException {
+    void test_userName_password_list_success(String userName, String password) throws InvalidUserInputException {
         assertTrue(login.varifyUserAndPassword(userName, password));
     }
 
@@ -41,7 +41,7 @@ public class LoginTest {
             "wrongBerit, 123456",
             "WrongKalle, password"
     })
-    void test_username_password_list_with_wrong_UserName(String userName, String password) throws WrongUserInputException {
+    void test_username_password_list_with_wrong_UserName(String userName, String password) throws InvalidUserInputException {
         assertFalse(login.varifyUserAndPassword(userName, password));
     }
 
@@ -50,7 +50,7 @@ public class LoginTest {
             "anna, wrongPassword",
             "berit, passwordWrong",
     })
-    void test_username_password_list_with_wrong_password(String userName, String password) throws WrongUserInputException {
+    void test_username_password_list_with_wrong_password(String userName, String password) throws InvalidUserInputException {
         assertFalse(login.varifyUserAndPassword(userName, password));
     }
 
