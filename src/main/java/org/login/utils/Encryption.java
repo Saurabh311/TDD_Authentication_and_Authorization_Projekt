@@ -1,19 +1,19 @@
 package org.login.utils;
 
-import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.Optional;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Optional;
 
 public class Encryption {
 
     private static final SecureRandom RAND = new SecureRandom();
 
-    public static Optional<String> generateSalt (final int length) {
+    public static Optional<String> generateSalt(final int length) {
         if (length < 1) {
             System.err.println("error in generateSalt: length must be > 0");
             return Optional.empty();
@@ -27,7 +27,7 @@ public class Encryption {
     private static final int KEY_LENGTH = 512;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA512";
 
-    public static Optional<String> hashPassword (String password, String salt) {
+    public static Optional<String> hashPassword(String password, String salt) {
 
         char[] chars = password.toCharArray();
         byte[] bytes = salt.getBytes();
@@ -50,7 +50,7 @@ public class Encryption {
         }
     }
 
-    public static boolean verifyPassword (String password, String key, String salt) {
+    public static boolean verifyPassword(String password, String key, String salt) {
         Optional<String> optEncrypted = hashPassword(password, salt);
         if (!optEncrypted.isPresent()) return false;
         return optEncrypted.get().equals(key);

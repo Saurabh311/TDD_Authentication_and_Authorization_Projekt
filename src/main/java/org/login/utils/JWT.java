@@ -31,6 +31,7 @@ public class JWT {
 
         return builder.compact();
     }
+
     public static boolean verifyUserToken(String jwtToken, String userName) {
         return Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
@@ -40,7 +41,7 @@ public class JWT {
                 .equals(userName);
     }
 
-    public static String getUsernameFromToken(String token){
+    public static String getUsernameFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
                 .parseClaimsJws(token)
