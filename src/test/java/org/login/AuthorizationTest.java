@@ -26,7 +26,7 @@ public class AuthorizationTest {
 
     @Test
     void test_rights_of_user_success() throws InvalidUserInputException {
-        String token = login.varifyUserGenarteToken("berit", "123456");
+        String token = login.generateUserToken("berit", "123456");
         List<Rights> result = login.getUserPermissions(token, Resource.ACCOUNT);
         assertEquals(List.of(READ,WRITE), result);
     }
@@ -34,7 +34,7 @@ public class AuthorizationTest {
     @MethodSource("testData")
     void test_user_rights_success(String username, String password, Resource resource) throws InvalidUserInputException {
         assertDoesNotThrow(() -> login.varifyUser_generateToken(username, password));
-        String token = login.varifyUserGenarteToken(username, password);
+        String token = login.generateUserToken(username, password);
         assertNotNull(login.getUserPermissions(token, resource));
         assertFalse(login.getUserPermissions(token, resource).isEmpty());
     }

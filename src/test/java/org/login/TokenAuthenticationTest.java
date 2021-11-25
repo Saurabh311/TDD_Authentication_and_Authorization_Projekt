@@ -26,8 +26,8 @@ public class TokenAuthenticationTest {
 
     @ParameterizedTest
     @MethodSource("testData")
-    void test_user_encrypted_password_generateToken(String user, String password) throws InvalidUserInputException {
-        String token = login.varifyUserGenarteToken(user, password);
+    void test_user_token(String user, String password) throws InvalidUserInputException {
+        String token = login.generateUserToken(user, password);
         assertNotNull(token);
         assertNotEquals("", token);
     }
